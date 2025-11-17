@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:visited_places/widgets/places_list.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:visited_places/providers/user_places.dart';
+import 'package:visited_places/widgets/location_input.dart';
 
-class AddPlaceScreen extends StatefulWidget {
+class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
 
   @override
-  State<AddPlaceScreen> createState() {
+  ConsumerState<AddPlaceScreen> createState() {
     return _AddPlaceScreenState();
   }
 }
 
-class _AddPlaceScreenState extends State<AddPlaceScreen> {
+class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
+
+  void _savePlace() {
+    final enteredTitle = _titleController.text;
+
+    if (enteredTitle == null || enteredTitle.isEmpty) {
+      return;
+    }
+
+    ref.read(userPlacesProvider.notifier).addPlace(enteredTitle);
+
+    Navigator.of(context).pop();
+  }
 
   @override
   void dispose() {
@@ -32,19 +47,22 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               controller: _titleController,
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
+            const SizedBox(height: 10),
+            LocationInput(),
             const SizedBox(height: 16),
             ElevatedButton.icon(
-              onPressed: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(builder: (ctx) => const AddPlaceScreen()),
-                // );
-                final title = _titleController.text.trim();
+              // onPressed: () {
+              //   Navigator.of(context).push(
+              //     MaterialPageRoute(builder: (ctx) => const AddPlaceScreen()),
+              //   );
+              //   // final title = _titleController.text.trim();
 
-                if (title.isEmpty) return;
+              //   // if (title.isEmpty) return;
 
-                // Return the entered title back to the previous screen
-                Navigator.of(context).pop(title);
-              },
+              //   // // Return the entered title back to the previous screen
+              //   // Navigator.of(context).pop(title);
+              // },
+              onPressed: _savePlace,
               icon: const Icon(Icons.add),
               label: const Text('Add Place'),
             ),
