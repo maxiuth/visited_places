@@ -3,6 +3,7 @@ import 'package:visited_places/widgets/places_list.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:visited_places/providers/user_places.dart';
 import 'package:visited_places/widgets/location_input.dart';
+import 'package:visited_places/models/place.dart';
 
 class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
@@ -15,15 +16,18 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
+  PlaceLocation? _selectedLocation;
 
   void _savePlace() {
     final enteredTitle = _titleController.text;
 
-    if (enteredTitle == null || enteredTitle.isEmpty) {
+    if (enteredTitle.isEmpty || _selectedLocation == null) {
       return;
     }
 
-    ref.read(userPlacesProvider.notifier).addPlace(enteredTitle);
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(enteredTitle, _selectedLocation!);
 
     Navigator.of(context).pop();
   }
@@ -48,7 +52,11 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: 10),
-            LocationInput(),
+            LocationInput(
+              onSelectLocation: (location) {
+                _selectedLocation = location;
+              },
+            ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               // onPressed: () {
