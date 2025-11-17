@@ -1,8 +1,8 @@
 # visited_places
 
-A new Flutter project.
+You can create a list of places that you have visited
 
-## Getting Started
+## Getting Started (default when creating a new Flutter Project)
 
 This project is a starting point for a Flutter application.
 
